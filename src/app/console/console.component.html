@@ -1,0 +1,75 @@
+<div class="card bg-secondary text-light">
+    <div class="card-header">Console</div>
+    <div class="card-body">
+        <form [formGroup]="myForm">
+            <div class="row">
+                <div class="col">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group">
+                        <input type="text" formControlName="url" [typeahead]="urls" [typeaheadOptionsLimit]="10"
+                            aria-describedby="btn_append" [typeaheadMinLength]="0"
+                            placeholder="Enter api url (f.e. /api/device/information)" class="form-control">
+                        <div class="spinner-border" [class.invisible]="!processingSubmit"></div>
+                        <div class="input-group-append" id="btn_append">
+                            <button style="width: 100px" (click)="doGet()" type="button" [disabled]="processingSubmit"
+                                class="btn btn-success">GET</button>
+                            <button style="width: 100px" (click)="doPost()" type="button" [disabled]="processingSubmit || true"
+                                class="btn btn-primary">POST</button>
+                            <button style="width: 100px" (click)="doPut()" type="button" [disabled]="processingSubmit || true"
+                                class="btn btn-info">PUT</button>
+                            <button style="width: 100px" (click)="doDel()" type="button" [disabled]="processingSubmit || true"
+                                class="btn btn-danger">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body bg-light">
+                            <tabset #staticTabs>
+                                <tab heading="Output" class="text-dark">
+                                    <div *ngFor="let resp of responses">
+                                        <app-logline [logData]="resp" (delEvent)="doDeleteLog($event)"></app-logline>
+                                    </div>
+                                    <br />
+                                    <dl class="row">
+                                        <dt class="col-sm-3">Example urls:</dt>
+                                        <dd class="col-sm-9">Click on a link below to fill url field</dd>
+                                        <dt class="col-sm-3">GET hardware information</dt>
+                                        <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                (click)="setURL('/api/device/information')">/api/device/information</a>
+                                        </dd>
+                                        <dt class="col-sm-3">GET signal info</dt>
+                                        <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                (click)="setURL('/api/device/signal')">/api/device/signal</a></dd>
+                                        <dt class="col-sm-3">GET monitoring status</dt>
+                                        <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                (click)="setURL('/api/monitoring/status')">/api/monitoring/status</a></dd>
+                                        <dt class="col-sm-3">GET provider info</dt>
+                                        <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                (click)="setURL('/api/net/current-plmn')">/api/net/current-plmn</a></dd>
+                                        <dt class="col-sm-3">GET traffic statistics</dt>
+                                        <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                (click)="setURL('/api/monitoring/traffic-statistics')">/api/monitoring/traffic-statistics</a>
+                                        </dd>
+                                    </dl>
+
+                                </tab>
+                                <tab heading="Payload">
+                                    <textarea class="form-control" formControlName="payload" rows="9"></textarea>
+                                </tab>
+                                <tab heading="Raw output">
+                                    <textarea class="form-control" formControlName="rawoutput" rows="11"></textarea>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

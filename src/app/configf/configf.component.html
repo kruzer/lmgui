@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card bg-light rounded-0">
+      <div class="card-header">Config Template Form</div>
+      <div class="card-body">
+        <!--this.config={{diagnostic}}-->
+        <form #formularz="ngForm" novalidate (ngSubmit)="onSubmit()">
+          <!-- formularz.value={{ formularz.value | json }}-->
+          <div class="form-group">
+            <label for="server">Server</label>
+            <!--
+              [(ngModel)] - two way binding - input to variable
+              name - required by form-group
+              id - required by label above
+              required - validity case
+              #inputserver - local template variable - binded to ngModel
+              [class.is-invalid] - property binding - to conditional value
+              The control has been visited.	ng-touched	ng-untouched
+              The control's value has changed.	ng-dirty	ng-pristine
+              The control's value is valid.	ng-valid	ng-invalid
+            -->
+            <input [(ngModel)]="config.server" name="server" class="form-control" id="server" required placeholder="Enter server name or ip"
+              #inpserver="ngModel" [class.bg-warning]="inpserver.dirty && inpserver.valid" [class.is-invalid]="inpserver.invalid && inpserver.touched">
+            <div [class.d-none]="inpserver.valid || inpserver.pristine" class="alert alert-danger">Router address is
+              required</div>
+            <small id="serverHelp" class="form-text text-muted">Address of your Huawei router</small>
+          </div>
+          <div class="form-group">
+            <label for="user">User</label>
+            <input [(ngModel)]="config.user" name="user" class="form-control" id="user" required placeholder="Enter login name"
+              #inpuser="ngModel" [class.bg-warning]="inpuser.dirty && inpuser.valid" [class.is-invalid]="inpuser.invalid && inpuser.touched">
+            <div [class.d-none]="inpuser.valid || inpuser.pristine" class="alert alert-danger">Router admin name is
+              required</div>
+            <small id="userHelp" class="form-text text-muted">This is the user field.</small>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input [(ngModel)]="config.password" name="password" type="password" class="form-control" id="password"
+              required #inppassword="ngModel" [class.bg-warning]="inppassword.dirty && inppassword.valid"
+              [class.is-invalid]="inppassword.invalid && inppassword.touched">
+            <small id="passHelp" class="form-text text-muted">Password to your Huawei router</small>
+          </div>
+          <button [disabled]="formularz.form.invalid || formularz.form.pristine" type="submit" class="btn btn-primary" >Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

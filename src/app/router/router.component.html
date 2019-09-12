@@ -1,0 +1,119 @@
+<div class="card-deck">
+  <div class="card text-light bg-success mb-3" style="max-width: 18rem;">
+    <div class="card-header">Current data rate</div>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        download
+        <span class="text-dark text-monospace">{{myTraffic?.CurrentDownloadRate | bytesSize:2:'/s'}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        upload
+        <span class="text-dark text-monospace">{{myTraffic?.CurrentUploadRate | bytesSize:2:'/s'}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-white bg-primary mb-3" style="max-width: 39rem;">
+    <div class="card-header">Connection time</div>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        current
+        <span class="text-dark text-monospace">{{myTraffic?.CurrentConnectTime | secondsToTime}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        total
+        <span class="text-dark text-monospace">{{myTraffic?.TotalConnectTime | secondsToTime}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="card-deck">
+
+  <div class="card text-light bg-warning mb-3" style="max-width: 18rem;">
+    <div class="card-header">Data volume</div>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent text-muted">current:</li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        download
+        <span class="text-dark text-monospace">{{myTraffic?.CurrentDownload | bytesSize}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        upload
+        <span class="text-dark text-monospace">{{myTraffic?.CurrentUpload | bytesSize}}</span>
+      </li>
+    </ul>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent text-muted">total:</li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        download
+        <span class="text-dark text-monospace">{{myTraffic?.TotalDownload | bytesSize}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        upload
+        <span class="text-dark text-monospace">{{myTraffic?.TotalUpload | bytesSize}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-light bg-info mb-3" style="max-width: 19rem;">
+    <div class="card-header">Device info</div>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        name
+        <span class="text-dark text-monospace">{{myDevice?.DeviceName }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        hardware ver.
+        <span class="text-dark text-monospace">{{myDevice?.HardwareVersion }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        software ver.
+        <span class="text-dark text-monospace">{{myDevice?.SoftwareVersion }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        webUI ver.
+        <span class="text-dark text-monospace">{{myDevice?.WebUIVersion }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        modes
+        <span class="text-dark text-monospace">{{myDevice?.supportmode }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        workmode
+        <span class="text-dark text-monospace">{{myDevice?.workmode }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-light bg-secondary mb-3" style="max-width: 18rem;">
+    <div class="card-header">Signal</div>
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        cell_id
+        <span class="text-dark text-monospace">{{mySignal?.cell_id }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        earfcn
+        <span class="text-dark text-monospace">{{mySignal?.earfcn }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        dlbandwdidth
+        <span class="text-dark text-monospace">{{mySignal?.dlbandwidth }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        ulbandwidth
+        <span class="text-dark text-monospace">{{mySignal?.ulbandwidth }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        mode
+        <span class="text-dark text-monospace">{{mySignal?.mode }}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        nei_cellid
+        <span class="text-dark text-monospace">{{mySignal?.nei_cellid }}</span>
+      </li>
+    </ul>
+  </div>
+
+</div>

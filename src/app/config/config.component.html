@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="card bg-light rounded-0">
+      <div class="card-header">Config - no form [(ngModel)] binding</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="server">Server</label>
+          <input #inpserver="ngModel" [(ngModel)]="config.server" class="form-control" placeholder="Enter server name or ip" id="server"
+            required>
+          <div [hidden]="inpserver.valid" class="alert alert-danger">Server is required</div>
+          <!-- id for label-->
+          <small id="serverHelp" class="form-text text-muted">This is the server field.</small>
+        </div>
+        <div class="form-group">
+          <label for="user">User</label>
+          <input [(ngModel)]="config.user" class="form-control" id="user" placeholder="Enter admin name">
+          <small id="userHelp" class="form-text text-muted">This is the user field.</small>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input #inppassword="ngModel" [(ngModel)]="config.password" type="password" class="form-control" 
+          placeholder="Password">
+        </div>
+        <div class="form-group">
+          <button style="width: 100px" (click)="setConfig()" type="button" class="btn btn-success m-1">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,150 @@
+<div class="card-deck">
+  <div class="card text-light bg-warning mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header"><i class="fa fa-th fa-1x"></i> RSSI</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="rssi" [gradient]="false"
+        [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale"
+        [animations]="false" (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+  <div class="card text-light bg-primary mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header">SINR</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="sinr" [gradient]="true" [xAxis]="showXAxis"
+        [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale" [animations]="false"
+        (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+  <div class="card text-light bg-danger mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header">RSRQ</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="rsrq" [gradient]="true" [xAxis]="showXAxis"
+        [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale" [animations]="false"
+        (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+  <div class="card text-light bg-success mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header">RSRP</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="rsrp" [gradient]="true" [xAxis]="showXAxis"
+        [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale" [animations]="false"
+        (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+  <div class="card text-light bg-secondary mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header">Download</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="download" [gradient]="true"
+        [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale"
+        [animations]="false" (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+  <div class="card text-light bg-info mb-4" style="max-width: 340px; min-width: 340px">
+    <div class="card-header">Upload</div>
+    <div>
+      <ngx-charts-area-chart [view]="view" [scheme]="colorScheme" [results]="upload" [gradient]="true"
+        [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" [autoScale]="autoScale"
+        [animations]="false" (select)="onSelect($event)">
+      </ngx-charts-area-chart>
+    </div>
+  </div>
+</div>
+
+<div class="card-deck">
+
+  <div class="card text-light bg-dark mb-3">
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        rssi
+        <span class="text-warning text-monospace">{{ sig['rssi']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        sinr
+        <span class="text-warning text-monospace">{{sig['sinr']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        rsrq
+        <span class="text-warning text-monospace">{{sig['rsrq']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        rsrp
+        <span class="text-warning text-monospace">{{sig['rsrp']}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-light bg-dark mb-3">
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        nei_cellid
+        <span class="text-warning text-monospace">{{sig['nei_cellid']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        earfcn
+        <span class="text-warning text-monospace">{{sig['earfcn']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        pci
+        <span class="text-warning text-monospace">{{sig['pci']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        plmn
+        <span class="text-warning text-monospace">{{sig['plmn']}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-light bg-dark mb-3">
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        cell_id
+        <span class="text-warning text-monospace">{{sig['cell_id']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        Classify
+        <span class="text-warning text-monospace">{{dev['Classify']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        supportmode
+        <span class="text-warning text-monospace">{{dev['supportmode']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        workmode
+        <span class="text-warning text-monospace">{{dev['workmode']}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card text-light bg-dark mb-3">
+    <ul class="list-group">
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        band
+        <span class="text-warning text-monospace">{{sig['band']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        tac
+        <span class="text-warning text-monospace">{{sig['tac']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        dlbandwidth
+        <span class="text-warning text-monospace">{{sig['dlbandwidth']}}</span>
+      </li>
+      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+        ulbandwidth
+        <span class="text-warning text-monospace">{{sig['ulbandwidth']}}</span>
+      </li>
+    </ul>
+  </div>
+
+</div>

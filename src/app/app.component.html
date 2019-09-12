@@ -1,0 +1,43 @@
+<nav class="navbar fixed-top navbar-expand-md navbar-dark mb-3">
+  <div class="flex-row d-flex">
+    <button type="button" class="navbar-toggler mr-2 " data-toggle="offcanvas" title="Toggle responsive left sidebar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#" title="{{title}}">{{title}}</a>
+  </div>
+  <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#collapsingNavbar"
+    aria-expanded="false">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="navbar-collapse collapse" id="collapsingNavbar" style="">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/about">About</a>
+        <!--<a class="nav-link" routerLink="/about" data-target="#myModal" data-toggle="modal">About</a>-->
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid" id="main">
+  <div class="row row-offcanvas row-offcanvas-left">
+    <div class="navabar navbar-dark col-md-1 col-lg-1 sidebar-offcanvas pl-0" id="sidebar" role="navigation">
+      <ul class="navbar-nav flex-column sticky-top pl-3 pt-5 mt-3">
+        <li class="nav-item"><a class="nav-link" routerLink="/router">Router</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/signal">Signal</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/configr">Config</a></li>
+        <!--<li class="nav-item"><a class="nav-link" routerLink="/configf">ConfigF</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/configr">ConfigR</a></li>-->
+        <li class="nav-item"><a class="nav-link" routerLink="/console" href="#">Console</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/about">About</a></li>
+      </ul>
+    </div>
+    <!--/col-->
+    <div class="col main pt-5 mt-3 text-secondary">
+      <router-outlet></router-outlet>
+      <!--<app-messages></app-messages>-->
+    </div>
+
+    <!--/main col-->
+  </div>
+
+</div>
