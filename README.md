@@ -1,6 +1,6 @@
 # LTEMonitor Angular Gui
 
-This is a gui part of LTEMonitor. 
+This is a gui part of LTEMonitor: https://github.com/kruzer/LTEMonitor 
 
 ## Usage
 
