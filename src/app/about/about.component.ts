@@ -9,9 +9,9 @@ import { ConfigService } from '../config.service';
 export class AboutComponent implements OnInit {
 
   constructor(private configService: ConfigService) { }
-  private AngularVersion: string;
-  private BoostVersion: string;
-  private AppVersion: string;
+  public AngularVersion: string;
+  public BoostVersion: string;
+  public AppVersion: string;
 
   ngOnInit() {
     this.AngularVersion = VERSION.full;
