@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/lmgui",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -29,6 +30,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -123,5 +130,8 @@
       }
     }
   },
-  "defaultProject": "lmgui"
+  "defaultProject": "lmgui",
+  "cli": {
+    "analytics": "574646f8-50ff-42f3-8ab4-c8e8d650cadd"
+  }
 }

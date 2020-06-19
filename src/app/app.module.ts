@@ -19,7 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { TabsetComponent, TabsModule } from 'ngx-bootstrap';
+import { TabsetComponent, TabsModule } from 'ngx-bootstrap/tabs';
 import { ConfigfComponent } from './configf/configf.component';
 import { ConfigrComponent } from './configr/configr.component';
 import { LoglineComponent } from './logline/logline.component';
