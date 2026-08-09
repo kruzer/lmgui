@@ -1,16 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.css']
+  styleUrl: './messages.component.css'
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent {
 
-  constructor(public messageService: MessageService) { }
-
-  ngOnInit() {
-  }
+  readonly messageService = inject(MessageService);
 
 }

@@ -1,46 +1,50 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Subscription, interval } from 'rxjs';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+
 import { ApiService } from '../api.service';
-import { interval, Subscription } from 'rxjs';
+
+interface Series {
+  name: string;
+  series: { name: string; value: number }[];
+}
+
+/** Number of samples kept on each chart. */
+const MAX_SAMPLES = 120;
+/** Placeholder value of the seed sample, dropped as soon as real data arrives. */
+const SEED_VALUE = 0.123;
+
+function seed(name: string): Series[] {
+  return [{ name, series: [{ name: '0', value: SEED_VALUE }] }];
+}
 
 @Component({
   selector: 'app-signal',
+  imports: [NgxChartsModule],
   templateUrl: './signal.component.html',
-  styleUrls: ['./signal.component.css']
+  styleUrl: './signal.component.css'
 })
-
 export class SignalComponent implements OnInit, OnDestroy {
-  private zegar$: Subscription;
-  public sig: any[];
-  public dev: any[];
-  public traf: any[];
 
-  public rssi = [{
-    "name": "RSSI",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  public sinr = [{
-    "name": "SINR",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  public rsrp = [{
-    "name": "RSRP",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  public rsrq = [{
-    "name": "RSRQ",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  public download = [{
-    "name": "DOWN",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  public upload = [{
-    "name": "UPLO",
-    "series": [{ "name": "0", "value": 0.123 }]
-  }];
-  view: any[] = [330, 200];
-  counter: number = 0;
-  counterTraf: number = 0;
+  private apiService = inject(ApiService);
+
+  private zegar$?: Subscription;
+
+  readonly sig = signal<any>({});
+  readonly dev = signal<any>({});
+  readonly traf = signal<any>({});
+
+  readonly rssi = signal<Series[]>(seed('RSSI'));
+  readonly sinr = signal<Series[]>(seed('SINR'));
+  readonly rsrp = signal<Series[]>(seed('RSRP'));
+  readonly rsrq = signal<Series[]>(seed('RSRQ'));
+  readonly download = signal<Series[]>(seed('DOWN'));
+  readonly upload = signal<Series[]>(seed('UPLO'));
+
+  view: [number, number] = [330, 200];
+  counter = 0;
+  counterTraf = 0;
+
   // options
   showXAxis = false;
   showYAxis = true;
@@ -52,112 +56,85 @@ export class SignalComponent implements OnInit, OnDestroy {
   yAxisLabel = 'dBm';
   autoScale = true;
 
-  colorScheme = {
+  colorScheme: any = {
     domain: ['#ffffff', '#A10A28', '#C7B42C', '#AA00AA']
   };
 
-  constructor(private apiService: ApiService) { }
-
   ngOnInit() {
-    this.zegar$ = interval(1000).subscribe( x => {
-      //console.log(this.zegar$);
-      this.showSignal();
-    })
+    this.zegar$ = interval(1000).subscribe(() => this.showSignal());
   }
 
-  ngOnDestroy(){
-    this.zegar$.unsubscribe();
+  ngOnDestroy() {
+    this.zegar$?.unsubscribe();
   }
 
   showSignal() {
     this.apiService.getDeviceSignal().subscribe(data => {
-      this.sig = data['response'];
-
-      const level_rsrq=parseInt(data['response']['rsrq']);
-      const level_rsrp=parseInt(data['response']['rsrp']);
-      const level_sinr=parseInt(data['response']['sinr']);
-      const level_rssi=parseInt(data['response']['rssi']);
-      this.addData(level_rsrq, level_rsrp, level_sinr, level_rssi);
+      const response = data['response'];
+      if (!response) {
+        return;
+      }
+      this.sig.set(response);
+      this.addData(
+        parseInt(response['rsrq'], 10),
+        parseInt(response['rsrp'], 10),
+        parseInt(response['sinr'], 10),
+        parseInt(response['rssi'], 10)
+      );
     });
     this.apiService.getTraffic().subscribe(data => {
-      const download=parseInt(data['response']['CurrentDownloadRate']);
-      const upload=parseInt(data['response']['CurrentUploadRate']);
-      this.traf=data['response'];
-      this.addDataTraf(download/(1024*1024), upload/(1024*1024) );
+      const response = data['response'];
+      if (!response) {
+        return;
+      }
+      this.traf.set(response);
+      this.addDataTraf(
+        parseInt(response['CurrentDownloadRate'], 10) / (1024 * 1024),
+        parseInt(response['CurrentUploadRate'], 10) / (1024 * 1024)
+      );
     });
     this.apiService.getDeviceInfo().subscribe(data => {
-      this.dev = data['response'];
-    })
+      this.dev.set(data['response'] ?? {});
+    });
   }
 
-  addData(level_rsrq: number, level_rsrp: number, level_sinr: number, level_rssi:number) {
-    if (this.rsrq[0].series.length > 120 || this.rsrq[0].series[0].value==0.123) {
-      this.rsrq[0].series.shift();
-      this.rsrp[0].series.shift();
-      this.sinr[0].series.shift();
-      this.rssi[0].series.shift();
-    }
-    const data_rsrq =
-    {
-      "name": this.counter.toString(),
-      "value": level_rsrq
-    }
-    this.rsrq[0].series.push(data_rsrq);
-    this.rsrq = [...this.rsrq];
+  /** Pushes one sample and drops the oldest once the window is full. */
+  private push(target: ReturnType<typeof signal<Series[]>>, value: number, label: string, drop: boolean) {
+    target.update(prev => {
+      const series = drop ? prev[0].series.slice(1) : prev[0].series.slice();
+      series.push({ name: label, value });
+      return [{ name: prev[0].name, series }];
+    });
+  }
 
-    const data_rsrp =
-    {
-      "name": this.counter.toString(),
-      "value": level_rsrp
-    }
-    this.rsrp[0].series.push(data_rsrp);
-    this.rsrp = [...this.rsrp];
+  private shouldDrop(current: Series[]): boolean {
+    return current[0].series.length > MAX_SAMPLES || current[0].series[0].value === SEED_VALUE;
+  }
 
-    const data_sinr =
-    {
-      "name": this.counter.toString(),
-      "value": level_sinr
-    }
-    this.sinr[0].series.push(data_sinr);
-    this.sinr = [...this.sinr];
+  addData(level_rsrq: number, level_rsrp: number, level_sinr: number, level_rssi: number) {
+    const label = this.counter.toString();
+    const drop = this.shouldDrop(this.rsrq());
 
-    const data_rssi =
-    {
-      "name": this.counter.toString(),
-      "value": level_rssi
-    }
-    this.rssi[0].series.push(data_rssi);
-    this.rssi = [...this.rssi];
+    this.push(this.rsrq, level_rsrq, label, drop);
+    this.push(this.rsrp, level_rsrp, label, drop);
+    this.push(this.sinr, level_sinr, label, drop);
+    this.push(this.rssi, level_rssi, label, drop);
 
     this.counter++;
   }
 
   addDataTraf(download: number, upload: number) {
-    if (this.download[0].series.length > 120 || this.download[0].series[0].value==0.123) {
-      this.download[0].series.shift();
-      this.upload[0].series.shift();
-    }
-    const data_d =
-    {
-      "name": this.counterTraf.toString(),
-      "value": download
-    }
-    this.download[0].series.push(data_d);
-    this.download = [...this.download];
+    const label = this.counterTraf.toString();
+    const drop = this.shouldDrop(this.download());
 
-    const data_u =
-    {
-      "name": this.counterTraf.toString(),
-      "value": upload
-    }
-    this.upload[0].series.push(data_u);
-    this.upload = [...this.upload];
+    this.push(this.download, download, label, drop);
+    this.push(this.upload, upload, label, drop);
 
     this.counterTraf++;
   }
 
-  onSelect(someEvent){
-
+  onSelect() {
+    // no-op, kept for the chart's (select) binding
   }
 
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -11,23 +11,24 @@ import { environment } from '../environments/environment';
 })
 export class ConfigService {
 
+  private http = inject(HttpClient);
+  private messageService = inject(MessageService);
+
   private configUrl = environment.baseUrl + '/config';
 
-  constructor(private http: HttpClient, private messageService: MessageService) { }
-
-  setConfig(newConfig){
-    this.log("start setConfig:" + newConfig);
-    return this.http.put(this.configUrl,newConfig).pipe(
-      tap(cos => this.log('setting config')),
-      catchError(this.handleError('setConfig', []))
-    )
+  setConfig(newConfig: unknown): Observable<any> {
+    this.log('start setConfig:' + JSON.stringify(newConfig));
+    return this.http.put<any>(this.configUrl, newConfig).pipe(
+      tap(() => this.log('setting config')),
+      catchError(this.handleError('setConfig', {}))
+    );
   }
 
-  getConfig() {
-    this.log("start");
-    return this.http.get(this.configUrl).pipe(
-      tap(heroes => this.log('fetched config')),
-      catchError(this.handleError('getConfig', []))
+  getConfig(): Observable<any> {
+    this.log('start');
+    return this.http.get<any>(this.configUrl).pipe(
+      tap(() => this.log('fetched config')),
+      catchError(this.handleError('getConfig', {}))
     );
   }
 
@@ -43,7 +44,7 @@ export class ConfigService {
       console.error(error); // log to console instead
 
       // TODO: better job of transforming error for user consumption
-      this.log('${operation} failed: ${error.message}');
+      this.log(`${operation} failed: ${error.message}`);
 
       // Let the app keep running by returning an empty result.
       return of(result as T);

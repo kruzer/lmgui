@@ -5,58 +5,28 @@
             <div class="card-body">
                 <form [formGroup]="configForm" (ngSubmit)="onSubmit()">
                     <div class="form-group">
-                        <label >Server</label>
-                        <input [class.is-invalid]="configForm.get('server').invalid &&
-                                                   configForm.get('server').touched" 
-                               [class.bg-warning]="configForm.get('server').dirty && 
-                                                   configForm.get('server').valid"
-                                type="text" 
-                               class="form-control" formControlName="server" placeholder="Enter server name or ip">
-                        <small [class.d-none]="configForm.get('server').valid || 
-                                            configForm.get('server').pristine" 
-                                            class="text-danger">Server is required</small>                    
+                        <label for="cfgr-server">Server</label>
+                        <input [class.is-invalid]="serverInvalid()"
+                               [class.bg-warning]="serverWarn()"
+                               type="text"
+                               class="form-control" id="cfgr-server" formControlName="server" placeholder="Enter server name or ip">
+                        <small [class.d-none]="serverHideError()" class="text-danger">Server is required</small>
                     </div>
                     <div class="form-group">
-                        <label>User</label>
-                        <input [class.is-invalid]="configForm.get('user').invalid &&
-                                                   configForm.get('user').touched" 
-                               [class.bg-warning]="configForm.get('user').dirty && 
-                                                   configForm.get('user').valid"
-                                class="form-control" type="text" formControlName="user">
-                                <small [class.d-none]="configForm.get('user').valid || 
-                                configForm.get('user').pristine" 
-                                class="text-danger">User is required</small>                    
-        </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input [class.is-invalid]="configForm.get('password').invalid &&
-                                                   configForm.get('password').touched" 
-                               [class.bg-warning]="configForm.get('password').dirty && 
-                                                   configForm.get('password').valid"
-                        class="form-control" type="password" formControlName="password">
+                        <label for="cfgr-user">User</label>
+                        <input [class.is-invalid]="userInvalid()"
+                               [class.bg-warning]="userWarn()"
+                               class="form-control" id="cfgr-user" type="text" formControlName="user">
+                        <small [class.d-none]="userHideError()" class="text-danger">User is required</small>
                     </div>
-                    <button type="submit" 
-                            [disabled]="configForm.invalid || configForm.pristine"
-                    class="btn btn-primary">Submit</button>
+                    <div class="form-group">
+                        <label for="cfgr-password">Password</label>
+                        <input [class.is-invalid]="passwordInvalid()"
+                               [class.bg-warning]="passwordWarn()"
+                               class="form-control" id="cfgr-password" type="password" formControlName="password">
+                    </div>
+                    <button type="submit" [disabled]="submitDisabled()" class="btn btn-primary">Submit</button>
                 </form>
-                <!--
-                <form>
-                    <div class="form-group">
-                        <label for="server" >Server</label>
-                        <input type="text" class="form-control" [formControl]="server">
-                        <small id="serverHelp" class="form-text text-muted">Address of your Huawei router</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="user">User</label>
-                        <input class="form-control" type="text" [formControl]="user">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="form-control" type="password" [formControl]="password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                -->
             </div>
         </div>
     </div>

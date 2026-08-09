@@ -1,4 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { RouterComponent } from './router.component';
 
@@ -6,17 +8,20 @@ describe('RouterComponent', () => {
   let component: RouterComponent;
   let fixture: ComponentFixture<RouterComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RouterComponent ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RouterComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    }).compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(RouterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // stops the 1s polling interval started in ngOnInit
+    fixture.destroy();
   });
 
   it('should create', () => {

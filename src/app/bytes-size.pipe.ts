@@ -14,7 +14,7 @@ export class BytesSizePipe implements PipeTransform {
     'PB'
   ];
 
-  transform(bytes: number = 0, precision: number = 2, suffix: string = ''): string {
+  transform(bytes = 0, precision = 2, suffix = ''): string {
     if (isNaN(parseFloat(String(bytes))) || !isFinite(bytes)) return '?';
     let unit = 0;
     if(bytes < 1024) precision = 0;

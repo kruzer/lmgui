@@ -5,21 +5,24 @@
       <div class="card-body">
         <div class="form-group">
           <label for="server">Server</label>
-          <input #inpserver="ngModel" [(ngModel)]="config.server" class="form-control" placeholder="Enter server name or ip" id="server"
-            required>
+          <input #inpserver="ngModel" name="server" [ngModel]="config().server"
+            (ngModelChange)="setField('server', $event)" class="form-control"
+            placeholder="Enter server name or ip" id="server" required>
           <div [hidden]="inpserver.valid" class="alert alert-danger">Server is required</div>
           <!-- id for label-->
           <small id="serverHelp" class="form-text text-muted">This is the server field.</small>
         </div>
         <div class="form-group">
           <label for="user">User</label>
-          <input [(ngModel)]="config.user" class="form-control" id="user" placeholder="Enter admin name">
+          <input name="user" [ngModel]="config().user" (ngModelChange)="setField('user', $event)"
+            class="form-control" id="user" placeholder="Enter admin name">
           <small id="userHelp" class="form-text text-muted">This is the user field.</small>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input #inppassword="ngModel" [(ngModel)]="config.password" type="password" class="form-control" 
-          placeholder="Password">
+          <input #inppassword="ngModel" name="password" [ngModel]="config().password"
+            (ngModelChange)="setField('password', $event)" type="password" class="form-control"
+            placeholder="Password">
         </div>
         <div class="form-group">
           <button style="width: 100px" (click)="setConfig()" type="button" class="btn btn-success m-1">Save</button>

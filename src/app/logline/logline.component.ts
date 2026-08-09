@@ -1,22 +1,25 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
+import { DatePipe, KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-logline',
+  imports: [DatePipe, KeyValuePipe],
   templateUrl: './logline.component.html',
-  styleUrls: ['./logline.component.css']
+  styleUrl: './logline.component.css'
 })
-export class LoglineComponent implements OnInit {
+export class LoglineComponent {
 
-  @Input() logData: any;
-  @Output() delEvent = new EventEmitter();
-  hidden: boolean = true;
-  constructor() { }
+  readonly logData = input.required<any>();
+  readonly delEvent = output<any>();
 
-  deleteMe(){
-    this.delEvent.emit(this.logData);
+  readonly hidden = signal(true);
+
+  toggle() {
+    this.hidden.update(value => !value);
   }
 
-  ngOnInit() {
+  deleteMe() {
+    this.delEvent.emit(this.logData());
   }
 
 }

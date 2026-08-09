@@ -1,23 +1,29 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Subscription, interval } from 'rxjs'
+import { Component, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
 import { ApiService } from '../api.service';
-import { ViewChild } from '@angular/core';
-import { TabsetComponent } from 'ngx-bootstrap';
+import { LoglineComponent } from '../logline/logline.component';
 
 @Component({
   selector: 'app-console',
+  imports: [ReactiveFormsModule, LoglineComponent],
   templateUrl: './console.component.html',
-  styleUrls: ['./console.component.css']
+  styleUrl: './console.component.css'
 })
+export class ConsoleComponent {
 
-export class ConsoleComponent implements OnInit, OnDestroy {
-  private zegar$: Subscription;
-  processingSubmit: boolean = false;
-  urlCtrl = new FormControl();
-  outputCtrl = new FormControl();
-  payloadCtrl = new FormControl();
-  rawOutputCtrl = new FormControl();
+  private apiService = inject(ApiService);
+
+  readonly processingSubmit = signal(false);
+  readonly responses = signal<any[]>([]);
+
+  /** Index of the visible tab: 0 = Output, 1 = Payload, 2 = Raw output. */
+  readonly activeTab = signal(0);
+
+  urlCtrl = new FormControl('');
+  outputCtrl = new FormControl('');
+  payloadCtrl = new FormControl('');
+  rawOutputCtrl = new FormControl('');
   myForm = new FormGroup({
     url: this.urlCtrl,
     output: this.outputCtrl,
@@ -25,58 +31,44 @@ export class ConsoleComponent implements OnInit, OnDestroy {
     rawoutput: this.rawOutputCtrl
   });
 
-  setURL(link : string){
+  setURL(link: string) {
     this.urlCtrl.setValue(link);
   }
-  
-  responses: any[] = [];
-  /*
-    {"error":{"code":"100003","message":""},"topic":"error","url":"/api/costam1","date":Date.now()},
-    {"error":{"code":"120003","message":""},"topic":"error","url":"/api/costam1","date":Date.now()},
-    {"response":{"CurrentConnectTime":"355624","CurrentUpload":"1833443384","CurrentDownload":"28401873133","CurrentDownloadRate":"953899","CurrentUploadRate":"8781","TotalUpload":"460716027209","TotalDownload":"6320507273900","TotalConnectTime":"47300354","showtraffic":"1"},"topic":"response","url":"/api/costam1","date":Date.now()},
-  ]*/
-
-  @ViewChild('staticTabs') staticTabs: TabsetComponent;
 
   selectTab(tab_id: number) {
-    this.staticTabs.tabs[tab_id].active = true;
-  }
-
-  constructor(private apiService: ApiService) {
+    this.activeTab.set(tab_id);
   }
 
   doGet() {
-    this.processingSubmit = true;
-    console.log("doGet" + this.myForm.value.url);
-    var myUrl = this.myForm.value.url;
-    this.apiService.getApiByUrl(this.myForm.value.url).subscribe(dane => {
-      this.myForm.patchValue({rawoutput: JSON.stringify(dane) + "\n" + this.myForm.value.rawoutput});
-      dane['topic']=Object.keys(dane)[0];
-      dane['url']=myUrl;
-      dane['date']=Date.now();
-      console.log(dane);
+    this.processingSubmit.set(true);
+    const myUrl = this.myForm.value.url ?? '';
+    this.apiService.getApiByUrl(myUrl).subscribe(dane => {
+      this.myForm.patchValue({
+        rawoutput: JSON.stringify(dane) + '\n' + (this.myForm.value.rawoutput ?? '')
+      });
+      dane['topic'] = Object.keys(dane)[0];
+      dane['url'] = myUrl;
+      dane['date'] = Date.now();
 
-      this.responses.unshift(dane);
-      //      this.myTraffic = dane['response'];
-      this.processingSubmit=false;
+      this.responses.update(list => [dane, ...list]);
+      this.processingSubmit.set(false);
     });
   }
 
-  doDel(){}
-
-  doPut(){}
-
-  doPost(){}
-
-  doDeleteLog(resp){
-    let index = this.responses.indexOf(resp);
-    this.responses.splice(index, 1);
+  doDel() {
+    // placeholder: the DELETE button is disabled until the backend supports it
   }
 
-  ngOnInit() {
+  doPut() {
+    // placeholder: the PUT button is disabled until the backend supports it
   }
 
-  ngOnDestroy() {
+  doPost() {
+    // placeholder: the POST button is disabled until the backend supports it
+  }
+
+  doDeleteLog(resp: any) {
+    this.responses.update(list => list.filter(item => item !== resp));
   }
 
   urls = [

@@ -9,18 +9,23 @@
             <div class="row">
                 <div class="col">
                     <div class="input-group">
-                        <input type="text" formControlName="url" [typeahead]="urls" [typeaheadOptionsLimit]="10"
-                            aria-describedby="btn_append" [typeaheadMinLength]="0"
+                        <input type="text" formControlName="url" list="api-url-list"
+                            aria-describedby="btn_append"
                             placeholder="Enter api url (f.e. /api/device/information)" class="form-control">
-                        <div class="spinner-border" [class.invisible]="!processingSubmit"></div>
+                        <datalist id="api-url-list">
+                            @for (u of urls; track u) {
+                                <option [value]="u"></option>
+                            }
+                        </datalist>
+                        <div class="spinner-border" [class.invisible]="!processingSubmit()"></div>
                         <div class="input-group-append" id="btn_append">
-                            <button style="width: 100px" (click)="doGet()" type="button" [disabled]="processingSubmit"
+                            <button style="width: 100px" (click)="doGet()" type="button" [disabled]="processingSubmit()"
                                 class="btn btn-success">GET</button>
-                            <button style="width: 100px" (click)="doPost()" type="button" [disabled]="processingSubmit || true"
+                            <button style="width: 100px" (click)="doPost()" type="button" [disabled]="processingSubmit() || true"
                                 class="btn btn-primary">POST</button>
-                            <button style="width: 100px" (click)="doPut()" type="button" [disabled]="processingSubmit || true"
+                            <button style="width: 100px" (click)="doPut()" type="button" [disabled]="processingSubmit() || true"
                                 class="btn btn-info">PUT</button>
-                            <button style="width: 100px" (click)="doDel()" type="button" [disabled]="processingSubmit || true"
+                            <button style="width: 100px" (click)="doDel()" type="button" [disabled]="processingSubmit() || true"
                                 class="btn btn-danger">DELETE</button>
                         </div>
                     </div>
@@ -30,42 +35,64 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body bg-light">
-                            <tabset #staticTabs>
-                                <tab heading="Output" class="text-dark">
-                                    <div *ngFor="let resp of responses">
-                                        <app-logline [logData]="resp" (delEvent)="doDeleteLog($event)"></app-logline>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button" class="nav-link btn btn-link" role="tab"
+                                        [class.active]="activeTab() === 0" [attr.aria-selected]="activeTab() === 0"
+                                        (click)="selectTab(0)">Output</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button" class="nav-link btn btn-link" role="tab"
+                                        [class.active]="activeTab() === 1" [attr.aria-selected]="activeTab() === 1"
+                                        (click)="selectTab(1)">Payload</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button" class="nav-link btn btn-link" role="tab"
+                                        [class.active]="activeTab() === 2" [attr.aria-selected]="activeTab() === 2"
+                                        (click)="selectTab(2)">Raw output</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-3">
+                                @if (activeTab() === 0) {
+                                    <div class="text-dark" role="tabpanel">
+                                        @for (resp of responses(); track $index) {
+                                            <app-logline [logData]="resp" (delEvent)="doDeleteLog($event)"></app-logline>
+                                        }
+                                        <br />
+                                        <dl class="row">
+                                            <dt class="col-sm-3">Example urls:</dt>
+                                            <dd class="col-sm-9">Click on a link below to fill url field</dd>
+                                            <dt class="col-sm-3">GET hardware information</dt>
+                                            <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                    (click)="setURL('/api/device/information')">/api/device/information</a>
+                                            </dd>
+                                            <dt class="col-sm-3">GET signal info</dt>
+                                            <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                    (click)="setURL('/api/device/signal')">/api/device/signal</a></dd>
+                                            <dt class="col-sm-3">GET monitoring status</dt>
+                                            <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                    (click)="setURL('/api/monitoring/status')">/api/monitoring/status</a></dd>
+                                            <dt class="col-sm-3">GET provider info</dt>
+                                            <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                    (click)="setURL('/api/net/current-plmn')">/api/net/current-plmn</a></dd>
+                                            <dt class="col-sm-3">GET traffic statistics</dt>
+                                            <dd class="col-sm-9"><a href="javascript:void(0);"
+                                                    (click)="setURL('/api/monitoring/traffic-statistics')">/api/monitoring/traffic-statistics</a>
+                                            </dd>
+                                        </dl>
                                     </div>
-                                    <br />
-                                    <dl class="row">
-                                        <dt class="col-sm-3">Example urls:</dt>
-                                        <dd class="col-sm-9">Click on a link below to fill url field</dd>
-                                        <dt class="col-sm-3">GET hardware information</dt>
-                                        <dd class="col-sm-9"><a href="javascript:void(0);"
-                                                (click)="setURL('/api/device/information')">/api/device/information</a>
-                                        </dd>
-                                        <dt class="col-sm-3">GET signal info</dt>
-                                        <dd class="col-sm-9"><a href="javascript:void(0);"
-                                                (click)="setURL('/api/device/signal')">/api/device/signal</a></dd>
-                                        <dt class="col-sm-3">GET monitoring status</dt>
-                                        <dd class="col-sm-9"><a href="javascript:void(0);"
-                                                (click)="setURL('/api/monitoring/status')">/api/monitoring/status</a></dd>
-                                        <dt class="col-sm-3">GET provider info</dt>
-                                        <dd class="col-sm-9"><a href="javascript:void(0);"
-                                                (click)="setURL('/api/net/current-plmn')">/api/net/current-plmn</a></dd>
-                                        <dt class="col-sm-3">GET traffic statistics</dt>
-                                        <dd class="col-sm-9"><a href="javascript:void(0);"
-                                                (click)="setURL('/api/monitoring/traffic-statistics')">/api/monitoring/traffic-statistics</a>
-                                        </dd>
-                                    </dl>
-
-                                </tab>
-                                <tab heading="Payload">
-                                    <textarea class="form-control" formControlName="payload" rows="9"></textarea>
-                                </tab>
-                                <tab heading="Raw output">
-                                    <textarea class="form-control" formControlName="rawoutput" rows="11"></textarea>
-                                </tab>
-                            </tabset>
+                                }
+                                @if (activeTab() === 1) {
+                                    <div role="tabpanel">
+                                        <textarea class="form-control" formControlName="payload" rows="9"></textarea>
+                                    </div>
+                                }
+                                @if (activeTab() === 2) {
+                                    <div role="tabpanel">
+                                        <textarea class="form-control" formControlName="rawoutput" rows="11"></textarea>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

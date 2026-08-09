@@ -1,4 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { ConfigrComponent } from './configr.component';
 
@@ -6,14 +8,12 @@ describe('ConfigrComponent', () => {
   let component: ConfigrComponent;
   let fixture: ComponentFixture<ConfigrComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ConfigrComponent ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ConfigrComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    }).compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ConfigrComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -21,5 +21,13 @@ describe('ConfigrComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('marks the server field as required', () => {
+    component.configForm.patchValue({ server: '' });
+    expect(component.server.valid).toBe(false);
+
+    component.configForm.patchValue({ server: '192.168.1.1' });
+    expect(component.server.valid).toBe(true);
   });
 });

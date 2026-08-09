@@ -1,66 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Subscription, interval } from 'rxjs';
+
 import { ApiService } from '../api.service';
+import { BytesSizePipe } from '../bytes-size.pipe';
+import { SecondsToTimePipe } from '../seconds-to-time.pipe';
 import { Traffic } from '../traffic';
-import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-router',
+  imports: [BytesSizePipe, SecondsToTimePipe],
   templateUrl: './router.component.html',
-  styleUrls: ['./router.component.css']
+  styleUrl: './router.component.css'
 })
-export class RouterComponent implements OnInit {
-  myTraffic: Traffic;
-  myDevice: any;
-  mySignal: any;
-  zegar$;
+export class RouterComponent implements OnInit, OnDestroy {
 
-  constructor(private apiService: ApiService) { }
+  private apiService = inject(ApiService);
+
+  readonly myTraffic = signal<Traffic | undefined>(undefined);
+  readonly myDevice = signal<any>(undefined);
+  readonly mySignal = signal<any>(undefined);
+
+  private zegar$?: Subscription;
 
   ngOnInit() {
-    this.zegar$ = interval(1000).subscribe( x => {
-      //console.log(this.zegar$);
+    this.zegar$ = interval(1000).subscribe(() => {
       this.showTraffic();
       this.showDevice();
       this.showSignal();
-    })
+    });
   }
 
-  ngOnDestroy(){
-    this.zegar$.unsubscribe();
+  ngOnDestroy() {
+    this.zegar$?.unsubscribe();
   }
 
   showTraffic() {
-    this.apiService.getTraffic().subscribe(dane => this.myTraffic = dane['response']);
+    this.apiService.getTraffic().subscribe(dane => this.myTraffic.set(dane['response']));
   }
 
   showSignal() {
-    this.apiService.getDeviceSignal().subscribe(dane => this.mySignal = dane['response']);
+    this.apiService.getDeviceSignal().subscribe(dane => this.mySignal.set(dane['response']));
   }
 
   showDevice() {
-    this.apiService.getDeviceInfo().subscribe(dane => { 
-      this.myDevice = dane['response'];
-    });
+    this.apiService.getDeviceInfo().subscribe(dane => this.myDevice.set(dane['response']));
   }
-  
 
 }
-
-  //    this.trafficService.getTraffic()
-  //    .subscribe(data: any => this.myTraffic = response);
-//  this.trafficService.getTraffic().subscribe(data => this.myTraffic = data['response']);
-
-  /*
-  showTraffic() {
-    this.trafficService.getTraffic()
-      .subscribe((data: any) => {
-          this.CurrentConnectTime = data['CurrentConnectTime'],
-          this.CurrentUpload = data['CurrentUpload'],
-          this.CurrentDownload = data.response.CurrentDownload,
-          this.CurrentDownloadRate = data.response.CurrentDownloadRate,
-          this.CurrentUploadRate = data.response.CurrentUploadRate,
-          this.TotalUpload = data.response.TotalUpload,
-          this.TotalDownload = data.response.TotalDownload,
-          this.TotalConnectTime = data.response.TotalConnectTime
-      });
-  }*/

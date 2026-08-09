@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { ConfigService } from './config.service';
+import { ApiService } from './api.service';
 
-describe('ConfigService', () => {
+describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()]
@@ -12,7 +12,7 @@ describe('ConfigService', () => {
   });
 
   it('should be created', () => {
-    const service = TestBed.inject(ConfigService);
+    const service = TestBed.inject(ApiService);
     expect(service).toBeTruthy();
   });
 });

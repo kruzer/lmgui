@@ -1,18 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-
 export class MessageService {
-  messages: string[] = [];
+
+  private readonly _messages = signal<string[]>([]);
+
+  /** Read-only view of the collected messages. */
+  readonly messages = this._messages.asReadonly();
 
   add(message: string) {
-    this.messages.push(message);
+    this._messages.update(messages => [...messages, message]);
   }
 
   clear() {
-    this.messages = [];
-    this.add("cleaned");
+    this._messages.set([]);
+    this.add('cleaned');
   }
 }

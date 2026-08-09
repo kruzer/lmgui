@@ -1,29 +1,30 @@
-import { Component, OnInit, VERSION } from '@angular/core';
+import { Component, OnInit, VERSION, inject, signal } from '@angular/core';
 import { ConfigService } from '../config.service';
 
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.css']
+  styleUrl: './about.component.css'
 })
 export class AboutComponent implements OnInit {
 
-  constructor(private configService: ConfigService) { }
-  public AngularVersion: string;
-  public BoostVersion: string;
-  public AppVersion: string;
+  private configService = inject(ConfigService);
+
+  readonly AngularVersion = signal('');
+  readonly BoostVersion = signal('');
+  readonly AppVersion = signal('');
 
   ngOnInit() {
-    this.AngularVersion = VERSION.full;
+    this.AngularVersion.set(VERSION.full);
     this.getVersion();
   }
 
   getVersion() {
     this.configService.getConfig()
       .subscribe((data: any) => {
-        this.BoostVersion = data.config.boostVersion,
-        this.AppVersion = data.config.appVersion;
+        this.BoostVersion.set(data?.config?.boostVersion ?? '');
+        this.AppVersion.set(data?.config?.appVersion ?? '');
       });
-    }
+  }
 
 }
